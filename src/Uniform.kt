@@ -1,0 +1,4 @@
+
+interface Uniform {
+  
+}
