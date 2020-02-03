@@ -25,21 +25,28 @@ class Mat4 (backingStorage: Float32Array?, offset: Int = 0) : Uniform {
     storage.set(other.storage)
   }
 
-  val storage: Float32Array = backingStorage?.subarray(offset, offset+16)?:Float32Array(16)
+  override val storage: Float32Array = backingStorage?.subarray(offset, offset+16)?:Float32Array(16)
 
   fun clone() : Mat4 {
     return Mat4(this)
   }
 
-  fun set(vararg elements : Float ) {
+  override fun set(vararg values : Float ) : Mat4 {
     val allElements = Array<Float>(16) {
       i : Int ->
-      elements.getOrNull(i)?: if(i%5==0) 1.0f else 0.0f
+      values.getOrNull(i)?: if(i%5==0) 1.0f else 0.0f
     }
     storage.set(allElements)
+    return this
   }
-  fun set(other : Mat4){
-    storage.set(other.storage)
+
+  override fun set(other : Uniform) : Mat4{
+    if(other is Mat4) {
+      storage.set(other.storage)
+    } else {
+      throw Error("A Mat4 cannot be set from a Uniform of another type.")
+    }
+    return this
   }  
 
   fun premul(m : Mat4) : Mat4 {
@@ -311,7 +318,7 @@ class Mat4 (backingStorage: Float32Array?, offset: Int = 0) : Uniform {
     return this
   }
 
-  fun commit(gl : WebGLRenderingContext, uniformLocation : WebGLUniformLocation){
+  override fun commit(gl : WebGLRenderingContext, uniformLocation : WebGLUniformLocation, samplerIndex : Int){
     gl.uniformMatrix4fv(uniformLocation, false, storage);
   }
 

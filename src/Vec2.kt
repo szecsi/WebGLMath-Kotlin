@@ -18,7 +18,7 @@ class Vec2(backingStorage: Float32Array?, offset: Int = 0) : Uniform {
     storage.set(other.storage);
   }
 
-  val storage: Float32Array = backingStorage?.subarray(offset, offset+2)?:Float32Array(2)
+  override val storage: Float32Array = backingStorage?.subarray(offset, offset+2)?:Float32Array(2)
   inline var x : Float
     get() = storage[0]
     set(value) { storage[0] = value }
@@ -42,9 +42,9 @@ class Vec2(backingStorage: Float32Array?, offset: Int = 0) : Uniform {
     return this 
   }
 
-  inline fun set(other: Vec2) : Vec2 {
-    other.storage[0] = storage[0]
-    other.storage[1] = storage[1]
+  override fun set(vararg values : Float) : Vec2 {
+    storage[0] = values.getOrElse(0) {0.0f}
+    storage[1] = values.getOrElse(1) {0.0f}
     return this 
   }
 
@@ -187,7 +187,7 @@ class Vec2(backingStorage: Float32Array?, offset: Int = 0) : Uniform {
      storage[1] * other.storage[1] )
   }
 
-  inline fun commit(gl : WebGLRenderingContext, uniformLocation : WebGLUniformLocation){
+  override fun commit(gl : WebGLRenderingContext, uniformLocation : WebGLUniformLocation, samplerIndex : Int){
     gl.uniform2fv(uniformLocation, storage);
   }
 }
