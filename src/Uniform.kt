@@ -1,3 +1,5 @@
+package vision.gears.webglmath
+
 import org.khronos.webgl.Float32Array
 import org.khronos.webgl.get
 import org.khronos.webgl.set

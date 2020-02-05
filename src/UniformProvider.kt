@@ -1,14 +1,10 @@
-
-abstract class Drawable {
-  open fun gatherUniforms(target : UniformProvider){}
-  abstract fun draw(vararg uniformProviders : UniformProvider)
-  open fun drawWithOverrides(overrides : Map<String, UniformProvider>, vararg uniformProviders : UniformProvider){
-    draw(*uniformProviders)
-  }
-}
+package vision.gears.webglmath
 
 open class UniformProvider(vararg val glslStructNames : String) : Drawable() {
   internal val uniforms = HashMap<String, Uniform>()
+  fun register(uniformName : String, uniform : Uniform){
+    uniforms[uniformName] = uniform
+  }
   operator fun get(name : String): Uniform? { return uniforms[name] }
   operator fun set(name : String, uniform : Uniform ) { (uniforms[name] ?: return).set(uniform) }
   operator fun set(name : String, value : Float ) { (uniforms[name] ?: return).set(value) }

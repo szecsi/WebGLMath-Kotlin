@@ -1,3 +1,5 @@
+package vision.gears.webglmath
+
 import org.khronos.webgl.WebGLRenderingContext
 import org.khronos.webgl.WebGLUniformLocation
 import org.khronos.webgl.WebGLProgram

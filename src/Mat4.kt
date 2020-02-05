@@ -1,3 +1,5 @@
+package vision.gears.webglmath
+
 import org.khronos.webgl.Float32Array
 import org.khronos.webgl.get
 import org.khronos.webgl.set
@@ -225,7 +227,8 @@ class Mat4 (backingStorage: Float32Array?, offset: Int = 0) : Uniform {
     return this  
   }
 
-  fun translate(t : Vec3) : Mat4 { return translate(t.storage[0], t.storage[1], t.storage[3])}  
+  fun translate(t : Vec2) : Mat4 { return translate(t.storage[0], t.storage[1])}  
+  fun translate(t : Vec3) : Mat4 { return translate(t.storage[0], t.storage[1], t.storage[2])}  
   fun translate(x : Float = 0.0f, y : Float = 0.0f, z : Float = 0.0f) : Mat4 {
     storage[ 0] += storage[12] * x
     storage[ 4] += storage[12] * y
