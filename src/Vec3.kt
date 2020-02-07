@@ -52,13 +52,10 @@ class Vec3(backingStorage: Float32Array?, offset: Int = 0) : Uniform {
     return this 
   }
 
-  inline fun set(other: Vec3) : Vec3 {
-    other.storage[0] = storage[0]
-    other.storage[1] = storage[1]
-    other.storage[2] = storage[2]
+  override fun set(other: Uniform) : Vec3 {
+    storage.set(other.storage.subarray(0, storage.length))
     return this 
   }
-
 
   companion object {
     val zeros = Vec3()

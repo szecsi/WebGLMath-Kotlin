@@ -59,8 +59,9 @@ class ProgramReflection(val gl : WebGLRenderingContext, val glProgram : WebGLPro
             existingVariable.storage.length != reflectionVariable.storage.length){
             throw Error("Trying to reflect uniform ${uniformDesc.name} as a ${reflectionVariable::class.simpleName} with element count ${reflectionVariable.storage.length}, but it already exists in the target object as a ${(existingVariable::class.simpleName)} with element count ${existingVariable.storage.length}.")
           }
+        } else {
+          target.uniforms[uniformDesc.name] = reflectionVariable
         }
-        target.uniforms[uniformDesc.name] = reflectionVariable
       }
     }
   }

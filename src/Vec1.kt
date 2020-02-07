@@ -38,7 +38,6 @@ class Vec1(backingStorage: Float32Array?, offset: Int = 0) : Uniform {
   }
 
   override fun set(other: Uniform) : Vec1 {
-    for(i in 0 until storage.length)
     storage.set(other.storage.subarray(0, storage.length))
     return this 
   }

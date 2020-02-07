@@ -38,15 +38,14 @@ class Vec2(backingStorage: Float32Array?, offset: Int = 0) : Uniform {
     return Vec2(this);
   }
 
-  inline fun set(u: Float = 0.0f, v: Float = 0.0f) : Vec2 {
-    storage[0] = u
-    storage[1] = v
-    return this 
-  }
-
   override fun set(vararg values : Float) : Vec2 {
     storage[0] = values.getOrElse(0) {0.0f}
     storage[1] = values.getOrElse(1) {0.0f}
+    return this 
+  }
+
+  override fun set(other: Uniform) : Vec2 {
+    storage.set(other.storage.subarray(0, storage.length))
     return this 
   }
 

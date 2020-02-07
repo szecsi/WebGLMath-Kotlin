@@ -154,6 +154,45 @@ class Mat4 (backingStorage: Float32Array?, offset: Int = 0) : Uniform {
     storage[15] = (m30 * n03) + (m31 * n13) + (m32 * n23) + (m33 * n33)
   }
 
+  operator fun times(m : Mat4) : Mat4 {
+    val res = Mat4(this)
+    res *= m
+    return res
+  }
+
+  operator fun timesAssign(s : Float) {
+    storage[ 0] *= s
+    storage[ 1] *= s
+    storage[ 2] *= s
+    storage[ 3] *= s
+    storage[ 4] *= s
+    storage[ 5] *= s
+    storage[ 6] *= s
+    storage[ 7] *= s
+    storage[ 8] *= s
+    storage[ 9] *= s
+    storage[10] *= s
+    storage[12] *= s
+    storage[13] *= s
+    storage[14] *= s
+    storage[15] *= s
+  }
+
+  operator fun times(s : Float) : Mat4 {
+    val res = Mat4(this)
+    res *= s
+    return res    
+  }
+
+  operator fun times(v : Vec4) : Mat4 {
+    val vp = Vec4(this)
+    vp.storage[0] = storage[ 0] * v.storage[0] + storage[ 1] * v.storage[1] + storage[ 2] * v.storage[2] + storage[ 3] * v.storage[3]
+    vp.storage[1] = storage[ 4] * v.storage[0] + storage[ 5] * v.storage[1] + storage[ 6] * v.storage[2] + storage[ 7] * v.storage[3]
+    vp.storage[2] = storage[ 8] * v.storage[0] + storage[ 9] * v.storage[1] + storage[10] * v.storage[2] + storage[11] * v.storage[3]
+    vp.storage[3] = storage[12] * v.storage[0] + storage[13] * v.storage[1] + storage[14] * v.storage[2] + storage[15] * v.storage[3]        
+    return res    
+  }
+
   fun scale(s : Vec2) : Mat4 { return scale(s.storage[0], s.storage[1], 1.0f)}
   fun scale(s : Vec3) : Mat4 { return scale(s.storage[0], s.storage[1], s.storage[2])}  
   fun scale(sx : Float = 1.0f, sy : Float = 1.0f, sz : Float = 1.0f) : Mat4 {

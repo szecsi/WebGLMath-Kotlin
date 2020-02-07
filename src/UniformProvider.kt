@@ -9,7 +9,7 @@ open class UniformProvider(vararg val glslStructNames : String) : Drawable() {
   operator fun set(name : String, uniform : Uniform ) { (uniforms[name] ?: return).set(uniform) }
   operator fun set(name : String, value : Float ) { (uniforms[name] ?: return).set(value) }
 
-  val components = HashSet<Drawable>()
+  val components = ArrayList<Drawable>()
 
   fun addComponentsAndGatherUniforms(vararg children : Drawable){
     components.addAll(children)

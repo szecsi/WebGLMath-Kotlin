@@ -56,14 +56,10 @@ class Vec4(backingStorage: Float32Array?, offset: Int = 0) : Uniform {
     return this 
   }
 
-  inline fun set(other: Vec4) : Vec4 {
-    other.storage[0] = storage[0]
-    other.storage[1] = storage[1]
-    other.storage[2] = storage[2]
-    other.storage[3] = storage[3]    
+  override fun set(other: Uniform) : Vec4 {
+    storage.set(other.storage.subarray(0, storage.length))
     return this 
   }
-
 
   companion object {
     val zeros = Vec4(0.0f, 0.0f, 0.0f, 0.0f)
@@ -245,6 +241,23 @@ class Vec4(backingStorage: Float32Array?, offset: Int = 0) : Uniform {
       storage[2] * other.storage[2] +
       storage[3] * other.storage[3] )
   }
+
+  inline operator fun timesAssign(m : Mat4){
+    val t = Float32Array(storage)
+    storage[0] = m.storage[ 0] * t[0] + m.storage[ 4] * t[1] + m.storage[ 8] * t[2] + m.storage[12] * t[3]
+    storage[1] = m.storage[ 1] * t[0] + m.storage[ 5] * t[1] + m.storage[ 9] * t[2] + m.storage[13] * t[3]
+    storage[2] = m.storage[ 2] * t[0] + m.storage[ 6] * t[1] + m.storage[10] * t[2] + m.storage[14] * t[3]
+    storage[3] = m.storage[ 3] * t[0] + m.storage[ 7] * t[1] + m.storage[11] * t[2] + m.storage[15] * t[3]            
+  }
+
+  inline operator fun times(m : Mat4) : Mat4 {
+    val vp = Vec4(this)
+    vp.storage[0] = m.storage[ 0] * storage[0] + m.storage[ 4] * storage[1] + m.storage[ 8] * storage[2] + m.storage[12] * storage[3]
+    vp.storage[1] = m.storage[ 1] * storage[0] + m.storage[ 5] * storage[1] + m.storage[ 9] * storage[2] + m.storage[13] * storage[3]
+    vp.storage[2] = m.storage[ 2] * storage[0] + m.storage[ 6] * storage[1] + m.storage[10] * storage[2] + m.storage[14] * storage[3]
+    vp.storage[3] = m.storage[ 3] * storage[0] + m.storage[ 7] * storage[1] + m.storage[11] * storage[2] + m.storage[15] * storage[3]        
+    return res    
+  }  
 
   override fun commit(gl : WebGLRenderingContext, uniformLocation : WebGLUniformLocation, samplerIndex : Int){
     gl.uniform4fv(uniformLocation, storage);
