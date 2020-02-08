@@ -9,7 +9,7 @@ import kotlin.math.sqrt
 import kotlin.math.cos
 import kotlin.math.sin
 
-class Mat4 (backingStorage: Float32Array?, offset: Int = 0) : Uniform {
+class Mat4 (backingStorage: Float32Array?, offset: Int = 0) : UniformFloat {
 
   constructor(
 //    m00 : Float = 1.0f, m01: Float = 0.0f, m02: Float = 0.0f, m03: Float = 0.0f,
@@ -184,13 +184,13 @@ class Mat4 (backingStorage: Float32Array?, offset: Int = 0) : Uniform {
     return res    
   }
 
-  operator fun times(v : Vec4) : Mat4 {
-    val vp = Vec4(this)
+  operator fun times(v : Vec4) : Vec4 {
+    val vp = Vec4()
     vp.storage[0] = storage[ 0] * v.storage[0] + storage[ 1] * v.storage[1] + storage[ 2] * v.storage[2] + storage[ 3] * v.storage[3]
     vp.storage[1] = storage[ 4] * v.storage[0] + storage[ 5] * v.storage[1] + storage[ 6] * v.storage[2] + storage[ 7] * v.storage[3]
     vp.storage[2] = storage[ 8] * v.storage[0] + storage[ 9] * v.storage[1] + storage[10] * v.storage[2] + storage[11] * v.storage[3]
     vp.storage[3] = storage[12] * v.storage[0] + storage[13] * v.storage[1] + storage[14] * v.storage[2] + storage[15] * v.storage[3]        
-    return res    
+    return vp    
   }
 
   fun scale(s : Vec2) : Mat4 { return scale(s.storage[0], s.storage[1], 1.0f)}

@@ -5,7 +5,11 @@ open class UniformProvider(vararg val glslStructNames : String) : Drawable() {
   fun register(uniformName : String, uniform : Uniform){
     uniforms[uniformName] = uniform
   }
-  operator fun get(name : String): Uniform? { return uniforms[name] }
+  operator fun get(name : String): Uniform? {
+    if(uniforms[name] == null){
+      console.error("""WARNING: Attempt to access unknown or non-active uniform '${name}'.""" );         
+    }
+    return uniforms[name] }
   operator fun set(name : String, uniform : Uniform ) { (uniforms[name] ?: return).set(uniform) }
   operator fun set(name : String, value : Float ) { (uniforms[name] ?: return).set(value) }
 

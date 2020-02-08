@@ -56,8 +56,8 @@ class ProgramReflection(val gl : WebGLRenderingContext, val glProgram : WebGLPro
         val existingVariable = target[uniformDesc.name]
         if(existingVariable != null){ // if reflection property already exists, check compatibility
           if(existingVariable::class != reflectionVariable::class ||
-            existingVariable.storage.length != reflectionVariable.storage.length){
-            throw Error("Trying to reflect uniform ${uniformDesc.name} as a ${reflectionVariable::class.simpleName} with element count ${reflectionVariable.storage.length}, but it already exists in the target object as a ${(existingVariable::class.simpleName)} with element count ${existingVariable.storage.length}.")
+            existingVariable.getStorageSize() != reflectionVariable.getStorageSize()){
+            throw Error("Trying to reflect uniform ${uniformDesc.name} as a ${reflectionVariable::class.simpleName} with element count ${reflectionVariable.getStorageSize()}, but it already exists in the target object as a ${(existingVariable::class.simpleName)} with element count ${existingVariable.getStorageSize()}.")
           }
         } else {
           target.uniforms[uniformDesc.name] = reflectionVariable
@@ -107,46 +107,46 @@ class ProgramReflection(val gl : WebGLRenderingContext, val glProgram : WebGLPro
           WebGLRenderingContext.FLOAT_VEC3 ->    return Vec3()
           WebGLRenderingContext.FLOAT_VEC4 ->    return Vec4()
           WebGLRenderingContext.FLOAT_MAT4 ->    return Mat4()
-/*          WebGLRenderingContext.UNSIGNED_INT_SAMPLER_2D , 
-          WebGLRenderingContext.INT_SAMPLER_2D ,
-          WebGLRenderingContext.SAMPLER_2D_SHADOW ,
+//          WebGLRenderingContext.UNSIGNED_INT_SAMPLER_2D , 
+//          WebGLRenderingContext.INT_SAMPLER_2D ,
+//          WebGLRenderingContext.SAMPLER_2D_SHADOW ,
           WebGLRenderingContext.SAMPLER_2D ->    return Sampler2D()
-          WebGLRenderingContext.UNSIGNED_INT_SAMPLER_CUBE ,
-          WebGLRenderingContext.INT_SAMPLER_CUBE ,
-          WebGLRenderingContext.SAMPLER_CUBE_SHADOW ,
+//          WebGLRenderingContext.UNSIGNED_INT_SAMPLER_CUBE ,
+//          WebGLRenderingContext.INT_SAMPLER_CUBE ,
+//          WebGLRenderingContext.SAMPLER_CUBE_SHADOW ,
           WebGLRenderingContext.SAMPLER_CUBE ->  return SamplerCube()
-          WebGLRenderingContext.UNSIGNED_INT_SAMPLER_3D ,
-          WebGLRenderingContext.INT_SAMPLER_3D ,
+//          WebGLRenderingContext.UNSIGNED_INT_SAMPLER_3D ,
+//          WebGLRenderingContext.INT_SAMPLER_3D ,
           WebGLRenderingContext.SAMPLER_3D ->    return Sampler3D()
-          WebGLRenderingContext.UNSIGNED_INT_SAMPLER_2D_ARRAY ,
-          WebGLRenderingContext.INT_SAMPLER_2D_ARRAY ,
-          WebGLRenderingContext.SAMPLER_2D_SHADOW_ARRAY ,
-          WebGLRenderingContext.SAMPLER_2D_ARRAY ->    return Sampler2DArrayTexture()
-  */      }
-      } /*else {
+//          WebGLRenderingContext.UNSIGNED_INT_SAMPLER_2D_ARRAY ,
+//          WebGLRenderingContext.INT_SAMPLER_2D_ARRAY ,
+//          WebGLRenderingContext.SAMPLER_2D_SHADOW_ARRAY ,
+//          WebGLRenderingContext.SAMPLER_2D_ARRAY ->    return Sampler2DArrayTexture()
+        }
+      } else {
         when(type) {
           WebGLRenderingContext.FLOAT ->         return Vec1Array(arraySize)
           WebGLRenderingContext.FLOAT_VEC2 ->    return Vec2Array(arraySize)
           WebGLRenderingContext.FLOAT_VEC3 ->    return Vec3Array(arraySize)
           WebGLRenderingContext.FLOAT_VEC4 ->    return Vec4Array(arraySize)
           WebGLRenderingContext.FLOAT_MAT4 ->    return Mat4Array(arraySize)
-          WebGLRenderingContext.UNSIGNED_INT_SAMPLER_2D ,
-          WebGLRenderingContext.INT_SAMPLER_2D ,
-          WebGLRenderingContext.SAMPLER_2D_SHADOW ,
-          WebGLRenderingContext.SAMPLER_2D ->    return Sampler2DArray(arraySize)
-          WebGLRenderingContext.UNSIGNED_INT_SAMPLER_CUBE ,
-          WebGLRenderingContext.INT_SAMPLER_CUBE ,
-          WebGLRenderingContext.SAMPLER_CUBE_SHADOW ,
-          WebGLRenderingContext.SAMPLER_CUBE ->  return SamplerCubeArray(arraySize)
-          WebGLRenderingContext.UNSIGNED_INT_SAMPLER_3D , 
-          WebGLRenderingContext.INT_SAMPLER_3D ,
-          WebGLRenderingContext.SAMPLER_3D ->    return Sampler3DArray(arraySize)
-          WebGLRenderingContext.UNSIGNED_INT_SAMPLER_2D_ARRAY ,
-          WebGLRenderingContext.INT_SAMPLER_2D_ARRAY ,
-          WebGLRenderingContext.SAMPLER_2D_ARRAY_SHADOW ,
-          WebGLRenderingContext.SAMPLER_2D_ARRAY ->    return Sampler2DArrayTextureArray(arraySize)
+//          WebGLRenderingContext.UNSIGNED_INT_SAMPLER_2D ,
+//          WebGLRenderingContext.INT_SAMPLER_2D ,
+//          WebGLRenderingContext.SAMPLER_2D_SHADOW ,
+//          WebGLRenderingContext.SAMPLER_2D ->    return Sampler2DArray(arraySize)
+//          WebGLRenderingContext.UNSIGNED_INT_SAMPLER_CUBE ,
+//          WebGLRenderingContext.INT_SAMPLER_CUBE ,
+//          WebGLRenderingContext.SAMPLER_CUBE_SHADOW ,
+//          WebGLRenderingContext.SAMPLER_CUBE ->  return SamplerCubeArray(arraySize)
+//          WebGLRenderingContext.UNSIGNED_INT_SAMPLER_3D , 
+//          WebGLRenderingContext.INT_SAMPLER_3D ,
+//          WebGLRenderingContext.SAMPLER_3D ->    return Sampler3DArray(arraySize)
+//          WebGLRenderingContext.UNSIGNED_INT_SAMPLER_2D_ARRAY ,
+//          WebGLRenderingContext.INT_SAMPLER_2D_ARRAY ,
+//          WebGLRenderingContext.SAMPLER_2D_ARRAY_SHADOW ,
+//          WebGLRenderingContext.SAMPLER_2D_ARRAY ->    return Sampler2DArrayTextureArray(arraySize)
         }
-      }*/
+      }
       throw Error("Unhandled uniform variable of type ID ${type}.")
     }
 

@@ -9,7 +9,7 @@ import kotlin.random.Random
 import kotlin.math.sqrt
 
 @Suppress("NOTHING_TO_INLINE")
-class Vec4(backingStorage: Float32Array?, offset: Int = 0) : Uniform {
+class Vec4(backingStorage: Float32Array?, offset: Int = 0) : UniformFloat {
 
   constructor(u: Float = 0.0f, v: Float = 0.0f, s: Float = 0.0f, t: Float = 1.0f) : this(null, 0){
     storage[0] = u
@@ -53,11 +53,6 @@ class Vec4(backingStorage: Float32Array?, offset: Int = 0) : Uniform {
     storage[1] = values.getOrElse(1) {0.0f}
     storage[2] = values.getOrElse(2) {0.0f}
     storage[3] = values.getOrElse(3) {1.0f}
-    return this 
-  }
-
-  override fun set(other: Uniform) : Vec4 {
-    storage.set(other.storage.subarray(0, storage.length))
     return this 
   }
 
@@ -250,13 +245,13 @@ class Vec4(backingStorage: Float32Array?, offset: Int = 0) : Uniform {
     storage[3] = m.storage[ 3] * t[0] + m.storage[ 7] * t[1] + m.storage[11] * t[2] + m.storage[15] * t[3]            
   }
 
-  inline operator fun times(m : Mat4) : Mat4 {
+  inline operator fun times(m : Mat4) : Vec4 {
     val vp = Vec4(this)
     vp.storage[0] = m.storage[ 0] * storage[0] + m.storage[ 4] * storage[1] + m.storage[ 8] * storage[2] + m.storage[12] * storage[3]
     vp.storage[1] = m.storage[ 1] * storage[0] + m.storage[ 5] * storage[1] + m.storage[ 9] * storage[2] + m.storage[13] * storage[3]
     vp.storage[2] = m.storage[ 2] * storage[0] + m.storage[ 6] * storage[1] + m.storage[10] * storage[2] + m.storage[14] * storage[3]
     vp.storage[3] = m.storage[ 3] * storage[0] + m.storage[ 7] * storage[1] + m.storage[11] * storage[2] + m.storage[15] * storage[3]        
-    return res    
+    return vp    
   }  
 
   override fun commit(gl : WebGLRenderingContext, uniformLocation : WebGLUniformLocation, samplerIndex : Int){

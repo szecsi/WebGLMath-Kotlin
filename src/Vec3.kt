@@ -9,7 +9,7 @@ import kotlin.random.Random
 import kotlin.math.sqrt
 
 @Suppress("NOTHING_TO_INLINE")
-class Vec3(backingStorage: Float32Array?, offset: Int = 0) : Uniform {
+class Vec3(backingStorage: Float32Array?, offset: Int = 0) : UniformFloat {
 
   constructor(u: Float = 0.0f, v: Float = 0.0f, s: Float = 0.0f) : this(null, 0){
     storage[0] = u
@@ -49,11 +49,6 @@ class Vec3(backingStorage: Float32Array?, offset: Int = 0) : Uniform {
     storage[0] = values.getOrElse(0) {0.0f}
     storage[1] = values.getOrElse(1) {0.0f}
     storage[2] = values.getOrElse(2) {0.0f}
-    return this 
-  }
-
-  override fun set(other: Uniform) : Vec3 {
-    storage.set(other.storage.subarray(0, storage.length))
     return this 
   }
 
