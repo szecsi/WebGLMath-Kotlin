@@ -5,6 +5,7 @@ import org.khronos.webgl.get
 import org.khronos.webgl.set
 import org.khronos.webgl.WebGLRenderingContext
 import org.khronos.webgl.WebGLUniformLocation
+import kotlin.reflect.KProperty
 import kotlin.random.Random
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -86,6 +87,21 @@ class Vec4Array(backingStorage: Float32Array?, startIndex: Int = 0, endIndex: In
          v.storage[i+2] * m.storage[10]      
     }
   }  
+
+  operator fun provideDelegate(
+      provider: UniformProvider,
+      property: KProperty<*>) : Vec4Array {
+    provider.register(property.name, this)
+    return this
+  }
+
+  operator fun getValue(provider: UniformProvider, property: KProperty<*>): Vec4Array {
+    return this
+  }
+  
+  operator fun setValue(provider: UniformProvider, property: KProperty<*>, value: Vec4Array) {
+    set(value)
+  }    
 
   override fun commit(gl : WebGLRenderingContext, uniformLocation : WebGLUniformLocation, samplerIndex : Int){
     gl.uniform4fv(uniformLocation, storage);

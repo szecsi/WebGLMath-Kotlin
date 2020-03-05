@@ -5,6 +5,7 @@ import org.khronos.webgl.get
 import org.khronos.webgl.set
 import org.khronos.webgl.WebGLRenderingContext
 import org.khronos.webgl.WebGLUniformLocation
+import kotlin.reflect.KProperty
 import kotlin.math.sqrt
 import kotlin.math.cos
 import kotlin.math.sin
@@ -359,6 +360,22 @@ class Mat4 (backingStorage: Float32Array?, offset: Int = 0) : UniformFloat {
     storage[15] = (m100 * b03 - m101 * b01 + m102 * b00) * invDet
     return this
   }
+
+  operator fun provideDelegate(
+      provider: UniformProvider,
+      property: KProperty<*>) : Mat4{
+    provider.register(property.name, this)
+    return this
+  }
+
+  operator fun getValue(provider: UniformProvider, property: KProperty<*>): Mat4 {
+    return this
+  }
+
+  operator fun setValue(provider: UniformProvider, property: KProperty<*>, value: Mat4) {
+    set(value)
+  }  
+
 
   override fun commit(gl : WebGLRenderingContext, uniformLocation : WebGLUniformLocation, samplerIndex : Int){
     gl.uniformMatrix4fv(uniformLocation, false, storage);
