@@ -5,6 +5,7 @@ import org.khronos.webgl.get
 import org.khronos.webgl.set
 import org.khronos.webgl.WebGLRenderingContext
 import org.khronos.webgl.WebGLUniformLocation
+import kotlin.reflect.KProperty
 import kotlin.random.Random
 import kotlin.math.pow
 
@@ -25,6 +26,21 @@ class Mat4Array(backingStorage: Float32Array?, startIndex: Int = 0, endIndex: In
   operator fun get(i : Int) : Mat4{
     return Mat4(storage, i*16)
   }
+
+  operator fun provideDelegate(
+      provider: UniformProvider,
+      property: KProperty<*>) : Mat4Array{
+    provider.register(property.name, this)
+    return this
+  }
+
+  operator fun getValue(provider: UniformProvider, property: KProperty<*>): Mat4Array {
+    return this
+  }
+  
+  operator fun setValue(provider: UniformProvider, property: KProperty<*>, value: Mat4Array) {
+    set(value)
+  }    
 
   override fun commit(gl : WebGLRenderingContext, uniformLocation : WebGLUniformLocation, samplerIndex : Int){
     gl.uniformMatrix4fv(uniformLocation, false, storage);

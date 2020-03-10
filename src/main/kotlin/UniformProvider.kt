@@ -6,7 +6,7 @@ open class UniformProvider(vararg val glslStructNames : String) : Drawable() {
     uniforms[uniformName] = uniform
   }
   operator fun get(name : String): Uniform? {
-    if(uniforms[name] == null){
+    if(!uniforms.containsKey(name)){
       console.error("""WARNING: Attempt to access unknown or non-active uniform '${name}'.""" );         
     }
     return uniforms[name] }
@@ -22,13 +22,13 @@ open class UniformProvider(vararg val glslStructNames : String) : Drawable() {
 
   //TODO CzM Itt nem lenne jobb csak az új uniformokon átfutni?
   override fun gatherUniforms(target : UniformProvider){
-    components.forEach{
+    components.forEach {
       it.gatherUniforms(target)
     }
   }
 
   override fun draw(vararg uniformProviders : UniformProvider){
-    components.forEach(){
+    components.forEach {
       it.draw(this, *uniformProviders)
     }
   }

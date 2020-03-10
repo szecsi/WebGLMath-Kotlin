@@ -55,10 +55,10 @@ class ProgramReflection(val gl : WebGLRenderingContext, val glProgram : WebGLPro
       val descList = uniformDescriptors[structName] ?: continue
 
       for(uniformDesc in descList) {
-        val reflectionVariable = ProgramReflection.makeVar(gl, uniformDesc.type, uniformDesc.size)
+        val reflectionVariable = ProgramReflection.makeVar(uniformDesc.type, uniformDesc.size)
 
-        val existingVariable = target[uniformDesc.name]
-        if(existingVariable != null){ // if reflection property already exists, check compatibility
+        if(target.uniforms.containsKey(uniformDesc.name)){ // if reflection property already exists, check compatibility
+          val existingVariable = target.uniforms[uniformDesc.name] ?: throw Error("Uniform is null.")
           if(existingVariable::class != reflectionVariable::class ||
             existingVariable.getStorageSize() != reflectionVariable.getStorageSize()){
             throw Error("Trying to reflect uniform ${uniformDesc.name} as a ${reflectionVariable::class.simpleName} with element count ${reflectionVariable.getStorageSize()}, but it already exists in the target object as a ${(existingVariable::class.simpleName)} with element count ${existingVariable.getStorageSize()}.")
@@ -98,12 +98,11 @@ class ProgramReflection(val gl : WebGLRenderingContext, val glProgram : WebGLPro
      * @memberof ProgramReflection
      * @static 
      * @description Returns a new reflection variable based on a numerical WebGL type ID.
-     * @param {WebGL2RenderingContext} gl - The rendering context.
      * @param {Number} type - The numeric type of the uniform, i.e. a value of a type identifier property in the rendering context.
      * @param {Number} arraySize - The number of elements in the uniform, if it is an array. Otherwise, it must be 1.
      * @return {Vec1 | Vec1Array | Vec2 | Vec2Array | Vec3 | Vec3Array | Vec4 | Vec4Array | Mat4 | Mat4Array | Sampler2D | Sampler2DArray | SamplerCube | SamplerCubeArray | Sampler3D | Sampler3DArray | Sampler2DArrayTexture | Sampler2DArrayTextureArray} The new reflection object.
      */  
-    fun makeVar(gl : WebGLRenderingContext, type : Int, arraySize : Int) : Uniform {
+    fun makeVar(type : Int, arraySize : Int) : Uniform {
       if(arraySize == 1) {
         when(type) {
           WebGLRenderingContext.FLOAT ->         return Vec1()

@@ -7,6 +7,7 @@ import org.khronos.webgl.set
 import org.khronos.webgl.WebGLRenderingContext
 import org.khronos.webgl.WebGLUniformLocation
 import org.khronos.webgl.WebGLTexture
+import kotlin.reflect.KProperty
 
 interface Texture {
 	abstract val glTexture : WebGLTexture?

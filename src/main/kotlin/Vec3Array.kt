@@ -5,6 +5,7 @@ import org.khronos.webgl.get
 import org.khronos.webgl.set
 import org.khronos.webgl.WebGLRenderingContext
 import org.khronos.webgl.WebGLUniformLocation
+import kotlin.reflect.KProperty
 import kotlin.random.Random
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -93,6 +94,21 @@ class Vec3Array(backingStorage: Float32Array?, startIndex: Int = 0, endIndex: In
          v.storage[i+1] * m.storage[ 9] +
          v.storage[i+2] * m.storage[10]      
     }
+  }  
+
+  operator fun provideDelegate(
+      provider: UniformProvider,
+      property: KProperty<*>) : Vec3Array {
+    provider.register(property.name, this)
+    return this
+  }
+
+  operator fun getValue(provider: UniformProvider, property: KProperty<*>): Vec3Array {
+    return this
+  }
+  
+  operator fun setValue(provider: UniformProvider, property: KProperty<*>, value: Vec3Array) {
+    set(value)
   }  
 
   override fun commit(gl : WebGLRenderingContext, uniformLocation : WebGLUniformLocation, samplerIndex : Int){

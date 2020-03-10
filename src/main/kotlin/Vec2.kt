@@ -5,6 +5,7 @@ import org.khronos.webgl.get
 import org.khronos.webgl.set
 import org.khronos.webgl.WebGLRenderingContext
 import org.khronos.webgl.WebGLUniformLocation
+import kotlin.reflect.KProperty
 import kotlin.random.Random
 import kotlin.math.sqrt
 
@@ -181,6 +182,21 @@ class Vec2(backingStorage: Float32Array?, offset: Int = 0) : UniformFloat {
     return (
      storage[0] * other.storage[0] +
      storage[1] * other.storage[1] )
+  }
+
+  operator fun provideDelegate(
+      provider: UniformProvider,
+      property: KProperty<*>) : Vec2 {
+    provider.register(property.name, this)
+    return this
+  }
+
+  operator fun getValue(provider: UniformProvider, property: KProperty<*>): Vec2 {
+    return this
+  }
+
+  operator fun setValue(provider: UniformProvider, property: KProperty<*>, value: Vec2) {
+    set(value)
   }
 
   override fun commit(gl : WebGLRenderingContext, uniformLocation : WebGLUniformLocation, samplerIndex : Int){

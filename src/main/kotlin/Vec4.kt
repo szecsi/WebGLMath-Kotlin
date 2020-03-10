@@ -5,6 +5,7 @@ import org.khronos.webgl.get
 import org.khronos.webgl.set
 import org.khronos.webgl.WebGLRenderingContext
 import org.khronos.webgl.WebGLUniformLocation
+import kotlin.reflect.KProperty
 import kotlin.random.Random
 import kotlin.math.sqrt
 
@@ -239,20 +240,35 @@ class Vec4(backingStorage: Float32Array?, offset: Int = 0) : UniformFloat {
 
   inline operator fun timesAssign(m : Mat4){
     val t = Float32Array(storage)
-    storage[0] = m.storage[ 0] * t[0] + m.storage[ 4] * t[1] + m.storage[ 8] * t[2] + m.storage[12] * t[3]
-    storage[1] = m.storage[ 1] * t[0] + m.storage[ 5] * t[1] + m.storage[ 9] * t[2] + m.storage[13] * t[3]
-    storage[2] = m.storage[ 2] * t[0] + m.storage[ 6] * t[1] + m.storage[10] * t[2] + m.storage[14] * t[3]
-    storage[3] = m.storage[ 3] * t[0] + m.storage[ 7] * t[1] + m.storage[11] * t[2] + m.storage[15] * t[3]            
+    storage[0] = m.storage[ 0] * t[0] + m.storage[ 1] * t[1] + m.storage[ 2] * t[2] + m.storage[ 3] * t[3]
+    storage[1] = m.storage[ 4] * t[0] + m.storage[ 5] * t[1] + m.storage[ 6] * t[2] + m.storage[ 7] * t[3]
+    storage[2] = m.storage[ 8] * t[0] + m.storage[ 9] * t[1] + m.storage[10] * t[2] + m.storage[11] * t[3]
+    storage[3] = m.storage[12] * t[0] + m.storage[13] * t[1] + m.storage[14] * t[2] + m.storage[15] * t[3]            
   }
 
   inline operator fun times(m : Mat4) : Vec4 {
     val vp = Vec4(this)
-    vp.storage[0] = m.storage[ 0] * storage[0] + m.storage[ 4] * storage[1] + m.storage[ 8] * storage[2] + m.storage[12] * storage[3]
-    vp.storage[1] = m.storage[ 1] * storage[0] + m.storage[ 5] * storage[1] + m.storage[ 9] * storage[2] + m.storage[13] * storage[3]
-    vp.storage[2] = m.storage[ 2] * storage[0] + m.storage[ 6] * storage[1] + m.storage[10] * storage[2] + m.storage[14] * storage[3]
-    vp.storage[3] = m.storage[ 3] * storage[0] + m.storage[ 7] * storage[1] + m.storage[11] * storage[2] + m.storage[15] * storage[3]        
+    vp.storage[0] = m.storage[ 0] * storage[0] + m.storage[ 1] * storage[1] + m.storage[ 2] * storage[2] + m.storage[ 3] * storage[3]
+    vp.storage[1] = m.storage[ 4] * storage[0] + m.storage[ 5] * storage[1] + m.storage[ 6] * storage[2] + m.storage[ 7] * storage[3]
+    vp.storage[2] = m.storage[ 8] * storage[0] + m.storage[ 9] * storage[1] + m.storage[10] * storage[2] + m.storage[11] * storage[3]
+    vp.storage[3] = m.storage[12] * storage[0] + m.storage[13] * storage[1] + m.storage[14] * storage[2] + m.storage[15] * storage[3]        
     return vp    
   }  
+
+  operator fun provideDelegate(
+      provider: UniformProvider,
+      property: KProperty<*>) : Vec4 {
+    provider.register(property.name, this)
+    return this
+  }
+
+  operator fun getValue(provider: UniformProvider, property: KProperty<*>): Vec4 {
+    return this
+  }
+
+  operator fun setValue(provider: UniformProvider, property: KProperty<*>, value: Vec4) {
+    set(value)
+  }
 
   override fun commit(gl : WebGLRenderingContext, uniformLocation : WebGLUniformLocation, samplerIndex : Int){
     gl.uniform4fv(uniformLocation, storage);

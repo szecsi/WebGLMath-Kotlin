@@ -52,6 +52,7 @@ compileKotlin2Js {
     //kotlinOptions.outputFile = "${projectDir}/lib/WebGLMath.js"
     kotlinOptions.outputFile = "${buildDir}/classes/kotlin/main/WebGLMath.js"
     kotlinOptions.sourceMap = true
+    kotlinOptions.sourceMapEmbedSources = "always"
 }
 
 [compileKotlin2Js, compileTestKotlin2Js]*.configure {
