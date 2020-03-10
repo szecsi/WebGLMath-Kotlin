@@ -4,21 +4,29 @@ version '1.0'
 buildscript {
     ext.kotlin_version = '1.3.61'
     repositories {
+        jcenter()
         mavenCentral()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.moowork.gradle:gradle-node-plugin:1.2.0'
     }
 }
 
 apply plugin: 'kotlin2js'
+apply plugin: 'com.moowork.node'
 
 repositories {
+    jcenter()
     mavenCentral()
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-js:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-stdlib-js:$kotlin_version"
+    testCompile "org.jetbrains.kotlin:kotlin-test-js:$kotlin_version"
 }
 
 task assembleWeb(type: Sync) {
@@ -40,12 +48,43 @@ task assembleWeb(type: Sync) {
 
 assemble.dependsOn assembleWeb
 
-sourceSets {
-    main.kotlin.srcDirs += 'src'
-} 
-
-
 compileKotlin2Js {
-    kotlinOptions.outputFile = "${projectDir}/lib/WebGLMath.js"
+    //kotlinOptions.outputFile = "${projectDir}/lib/WebGLMath.js"
+    kotlinOptions.outputFile = "${buildDir}/classes/kotlin/main/WebGLMath.js"
     kotlinOptions.sourceMap = true
 }
+
+[compileKotlin2Js, compileTestKotlin2Js]*.configure {
+    kotlinOptions.moduleKind = "commonjs"
+}
+
+task populateNodeModules(type: Copy, dependsOn: compileKotlin2Js) {
+    from compileKotlin2Js.destinationDir
+
+    configurations.testCompile.each {
+        from zipTree(it.absolutePath).matching { include '*.js' }
+    }
+
+    into "${buildDir}/node_modules"
+}
+
+node {
+    download = true
+    version = "10.13.0"
+}
+
+task installMocha(type: NpmTask) {
+    args = ['install', 'mocha']
+}
+
+task runMocha(type: NodeTask, dependsOn: [compileTestKotlin2Js, populateNodeModules, installMocha]) {
+    if (org.gradle.internal.os.OperatingSystem.current().isWindows()) {
+        script = file('node_modules/mocha/bin/mocha')
+    } else {
+        script = file('node_modules/.bin/mocha')
+    }
+    args = [compileTestKotlin2Js.outputFile]
+}
+
+test.dependsOn runMocha
+

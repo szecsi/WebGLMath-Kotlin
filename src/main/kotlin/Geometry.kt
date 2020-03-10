@@ -1,5 +1,6 @@
 package vision.gears.webglmath
 
+//TODO CzM No usages
 abstract class Geometry : Drawable() {
 	abstract fun draw()
 

@@ -49,6 +49,7 @@ interface UniformSampler : Uniform {
 	abstract val storage : Int32Array
 	abstract val glTextures : Array<WebGLTexture?>
 
+	//TODO CzM Erre szerintem kotlinban nincs szükség, generálódik automatikus getter.
 	override fun getStorageSize() : Int{
 		return storage.length
 	}
@@ -65,6 +66,7 @@ interface UniformSampler : Uniform {
     return this
 	}
 
+	//TODO CzM Miért van így különvéve az első paraméter?
 	override fun set(firstTexture : Texture, vararg moreTextures : Texture){
 		glTextures[0] = firstTexture.glTexture
 		for(i : Int in 0 until storage.length) {

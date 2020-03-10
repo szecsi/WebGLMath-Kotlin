@@ -18,8 +18,12 @@ val WebGLRenderingContext.Companion.INT_SAMPLER_2D_ARRAY : Int get() = 0x8DCF
 val WebGLRenderingContext.Companion.SAMPLER_2D_ARRAY_SHADOW : Int get() = 0x8DC4
 val WebGLRenderingContext.Companion.SAMPLER_2D_ARRAY : Int get() = 0x8DC1
 
-class UniformDescriptor(val name:String, val type: Int, val size: Int, val location: WebGLUniformLocation){
-}
+class UniformDescriptor(
+        val name:String,
+        val type: Int,
+        val size: Int,
+        val location: WebGLUniformLocation
+)
 
 class ProgramReflection(val gl : WebGLRenderingContext, val glProgram : WebGLProgram) : Drawable() {
 

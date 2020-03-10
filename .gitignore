@@ -3,3 +3,6 @@ gradle.properties
 build
 lib
 WebGLMath.sublime-workspace
+node_modules
+web
+.idea

@@ -20,6 +20,7 @@ open class UniformProvider(vararg val glslStructNames : String) : Drawable() {
     gatherUniforms(this)
   }
 
+  //TODO CzM Itt nem lenne jobb csak az új uniformokon átfutni?
   override fun gatherUniforms(target : UniformProvider){
     components.forEach{
       it.gatherUniforms(target)
@@ -47,6 +48,7 @@ open class UniformProvider(vararg val glslStructNames : String) : Drawable() {
     }
   }    
 
+  //TODO CzM No usages
   fun using(vararg overriders : UniformProvider) : Drawable {
     val overrideMap = overriders.map{(it::class.simpleName?:"<no class name>") to it}.toMap()
     return object : Drawable() {
