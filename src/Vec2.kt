@@ -8,8 +8,36 @@ import org.khronos.webgl.WebGLUniformLocation
 import kotlin.reflect.KProperty
 import kotlin.random.Random
 import kotlin.math.sqrt
+import kotlinx.serialization.*
+import kotlinx.serialization.descriptors.*
+import kotlinx.serialization.json.*
+import kotlinx.serialization.encoding.*
+
+object Vec2Serializer : KSerializer<Vec2> {
+  @kotlinx.serialization.InternalSerializationApi
+  override val descriptor: SerialDescriptor =
+    buildSerialDescriptor("vision.gears.Vec2", StructureKind.LIST)
+  override fun deserialize(decoder: Decoder): Vec2 {
+    val input = decoder as? JsonDecoder ?: throw SerializationException("Expected Json Input")
+    val array = input.decodeJsonElement() as? JsonArray ?: throw SerializationException("Expected JsonArray")
+    return Vec2(
+      (array[0] as? JsonPrimitive)?.float ?: 0.0f,
+      (array[1] as? JsonPrimitive)?.float ?: 0.0f 
+    )
+  }
+  override fun serialize(encoder: Encoder, value : Vec2) {
+    val output = encoder as? JsonEncoder ?: throw SerializationException("This class can be saved only by Json")
+    val array = buildJsonArray {
+      add(value.x)
+      add(value.y)
+    }
+    output.encodeJsonElement(array)
+  }      
+}
+
 
 @Suppress("NOTHING_TO_INLINE")
+@Serializable(with = Vec2Serializer::class)
 class Vec2(backingStorage: Float32Array?, offset: Int = 0) : UniformFloat {
 
   constructor(u: Float = 0.0f, v: Float = 0.0f) : this(null, 0){
@@ -198,7 +226,7 @@ class Vec2(backingStorage: Float32Array?, offset: Int = 0) : UniformFloat {
   operator fun setValue(provider: UniformProvider, property: KProperty<*>, value: Vec2) {
     set(value)
   }
-
+  
   override fun commit(gl : WebGLRenderingContext, uniformLocation : WebGLUniformLocation, samplerIndex : Int){
     gl.uniform2fv(uniformLocation, storage);
   }

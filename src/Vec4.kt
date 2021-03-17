@@ -9,7 +9,34 @@ import kotlin.reflect.KProperty
 import kotlin.random.Random
 import kotlin.math.sqrt
 
+object Vec4Serializer : KSerializer<Vec4> {
+  @kotlinx.serialization.InternalSerializationApi
+  override val descriptor: SerialDescriptor =
+    buildSerialDescriptor("vision.gears.Vec4", StructureKind.LIST)
+  override fun deserialize(decoder: Decoder): Vec4 {
+    val input = decoder as? JsonDecoder ?: throw SerializationException("Expected Json Input")
+    val array = input.decodeJsonElement() as? JsonArray ?: throw SerializationException("Expected JsonArray")
+    return Vec4(
+      (array[0] as? JsonPrimitive)?.float ?: 0.0f,
+      (array[1] as? JsonPrimitive)?.float ?: 0.0f,
+      (array[2] as? JsonPrimitive)?.float ?: 0.0f,
+      (array[3] as? JsonPrimitive)?.float ?: 0.0f      
+    )
+  }
+  override fun serialize(encoder: Encoder, value : Vec4) {
+    val output = encoder as? JsonEncoder ?: throw SerializationException("This class can be saved only by Json")
+    val array = buildJsonArray {
+      add(value.x)
+      add(value.y)
+      add(value.z)
+      add(value.w)            
+    }
+    output.encodeJsonElement(array)
+  }      
+}
+
 @Suppress("NOTHING_TO_INLINE")
+@Serializable(with = Vec4Serializer::class)
 class Vec4(backingStorage: Float32Array?, offset: Int = 0) : UniformFloat {
 
   constructor(u: Float = 0.0f, v: Float = 0.0f, s: Float = 0.0f, t: Float = 1.0f) : this(null, 0){

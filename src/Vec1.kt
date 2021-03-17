@@ -8,7 +8,29 @@ import org.khronos.webgl.WebGLUniformLocation
 import kotlin.reflect.KProperty
 import kotlin.random.Random
 
+object Vec1Serializer : KSerializer<Vec1> {
+  @kotlinx.serialization.InternalSerializationApi
+  override val descriptor: SerialDescriptor =
+    buildSerialDescriptor("vision.gears.Vec1", StructureKind.LIST)
+  override fun deserialize(decoder: Decoder): Vec1 {
+    val input = decoder as? JsonDecoder ?: throw SerializationException("Expected Json Input")
+    val array = input.decodeJsonElement() as? JsonArray ?: throw SerializationException("Expected JsonArray")
+    return Vec1(
+      (array[0] as? JsonPrimitive)?.float ?: 0.0f 
+    )
+  }
+  override fun serialize(encoder: Encoder, value : Vec1) {
+    val output = encoder as? JsonEncoder ?: throw SerializationException("This class can be saved only by Json")
+    val array = buildJsonArray {
+      add(value.x)
+    }
+    output.encodeJsonElement(array)
+  }      
+}
+
+
 @Suppress("NOTHING_TO_INLINE")
+@Serializable(with = Vec1Serializer::class)
 class Vec1(backingStorage: Float32Array?, offset: Int = 0) : UniformFloat {
 
   constructor(u: Float = 0.0f) : this(null, 0){

@@ -99,7 +99,7 @@ class Vec3Array(backingStorage: Float32Array?, startIndex: Int = 0, endIndex: In
   operator fun provideDelegate(
       provider: UniformProvider,
       property: KProperty<*>) : Vec3Array {
-    provider.register(property.name, this)
+    provider.register("${property.name}[0]", this)
     return this
   }
 

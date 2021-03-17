@@ -91,7 +91,7 @@ class Vec4Array(backingStorage: Float32Array?, startIndex: Int = 0, endIndex: In
   operator fun provideDelegate(
       provider: UniformProvider,
       property: KProperty<*>) : Vec4Array {
-    provider.register(property.name, this)
+    provider.register("${property.name}[0]", this)
     return this
   }
 

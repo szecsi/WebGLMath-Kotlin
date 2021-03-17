@@ -106,7 +106,7 @@ class ProgramReflection(val gl : WebGLRenderingContext, val glProgram : WebGLPro
           WebGLRenderingContext.FLOAT_VEC3 ->    return Vec3()
           WebGLRenderingContext.FLOAT_VEC4 ->    return Vec4()
           WebGLRenderingContext.FLOAT_MAT4 ->    return Mat4()
-//          WebGLRenderingContext.UNSIGNED_INT_SAMPLER_2D , 
+          WebGLRenderingContext.UNSIGNED_INT_SAMPLER_2D , 
 //          WebGLRenderingContext.INT_SAMPLER_2D ,
 //          WebGLRenderingContext.SAMPLER_2D_SHADOW ,
           WebGLRenderingContext.SAMPLER_2D ->    return Sampler2D()

@@ -10,6 +10,57 @@ import kotlin.math.sqrt
 import kotlin.math.cos
 import kotlin.math.sin
 
+object Mat4Serializer : KSerializer<Mat4> {
+  @kotlinx.serialization.InternalSerializationApi
+  override val descriptor: SerialDescriptor =
+    buildSerialDescriptor("vision.gears.Mat4", StructureKind.LIST)
+  override fun deserialize(decoder: Decoder): Mat4 {
+    val input = decoder as? JsonDecoder ?: throw SerializationException("Expected Json Input")
+    val array = input.decodeJsonElement() as? JsonArray ?: throw SerializationException("Expected JsonArray")
+    return Mat4(
+      (array[ 0] as? JsonPrimitive)?.float ?: 0.0f,
+      (array[ 1] as? JsonPrimitive)?.float ?: 0.0f,
+      (array[ 2] as? JsonPrimitive)?.float ?: 0.0f,
+      (array[ 3] as? JsonPrimitive)?.float ?: 0.0f,
+      (array[ 4] as? JsonPrimitive)?.float ?: 0.0f,
+      (array[ 5] as? JsonPrimitive)?.float ?: 0.0f,
+      (array[ 6] as? JsonPrimitive)?.float ?: 0.0f,
+      (array[ 7] as? JsonPrimitive)?.float ?: 0.0f,
+      (array[ 8] as? JsonPrimitive)?.float ?: 0.0f,
+      (array[ 9] as? JsonPrimitive)?.float ?: 0.0f,
+      (array[10] as? JsonPrimitive)?.float ?: 0.0f,
+      (array[11] as? JsonPrimitive)?.float ?: 0.0f,
+      (array[12] as? JsonPrimitive)?.float ?: 0.0f,
+      (array[13] as? JsonPrimitive)?.float ?: 0.0f,
+      (array[14] as? JsonPrimitive)?.float ?: 0.0f,
+      (array[15] as? JsonPrimitive)?.float ?: 0.0f
+    )
+  }
+  override fun serialize(encoder: Encoder, value : Mat4) {
+    val output = encoder as? JsonEncoder ?: throw SerializationException("This class can be saved only by Json")
+    val array = buildJsonArray {
+      add(value.storage[ 0])
+      add(value.storage[ 4])
+      add(value.storage[ 8])
+      add(value.storage[12])
+      add(value.storage[ 1])
+      add(value.storage[ 5])
+      add(value.storage[ 9])
+      add(value.storage[13])
+      add(value.storage[ 2])
+      add(value.storage[ 6])
+      add(value.storage[10])
+      add(value.storage[14])
+      add(value.storage[ 3])
+      add(value.storage[ 7])
+      add(value.storage[11])
+      add(value.storage[15])
+    }
+    output.encodeJsonElement(array)
+  }      
+}
+
+@Serializable(with = Mat4Serializer::class)
 class Mat4 (backingStorage: Float32Array?, offset: Int = 0) : UniformFloat {
 
   constructor(
@@ -20,7 +71,7 @@ class Mat4 (backingStorage: Float32Array?, offset: Int = 0) : UniformFloat {
     vararg elements : Float ) : this(null, 0){
     val allElements = Array<Float>(16) {
       i : Int ->
-      elements.getOrNull(i)?: if(i%5==0) 1.0f else 0.0f
+      elements.getOrNull((i % 4)*4 + i/4)?: if(i%5==0) 1.0f else 0.0f
     }
     storage.set(allElements)
   }
@@ -37,7 +88,7 @@ class Mat4 (backingStorage: Float32Array?, offset: Int = 0) : UniformFloat {
   override fun set(vararg values : Float ) : Mat4 {
     val allElements = Array<Float>(16) {
       i : Int ->
-      values.getOrNull(i)?: if(i%5==0) 1.0f else 0.0f
+      values.getOrNull((i % 4)*4 + i/4)?: if(i%5==0) 1.0f else 0.0f
     }
     storage.set(allElements)
     return this
@@ -212,7 +263,7 @@ class Mat4 (backingStorage: Float32Array?, offset: Int = 0) : UniformFloat {
     return this  
   }
 
-  fun rotate(angle : Float, axis : Vec3) : Mat4 { return rotate(angle, axis.storage[0], axis.storage[1], axis.storage[3])}  
+  fun rotate(angle : Float, axis : Vec3) : Mat4 { return rotate(angle, axis.storage[0], axis.storage[1], axis.storage[2])}
   fun rotate(angle : Float = 0.0f, axisX : Float = 0.0f, axisY : Float = 0.0f, axisZ : Float = 0.0f) : Mat4 {
     var x = axisX
     var y = axisY
